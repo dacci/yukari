@@ -11,14 +11,28 @@ import {
   ThemeProvider,
   useMediaQuery
 } from '@mui/material';
+import {Calculate} from '@mui/icons-material';
+import IpCalc from './component/IpCalc';
 
 const router = createHashRouter([
   {
     path: '/',
     element: (
       <List>
+        <ListItem>
+          <ListItemButton component={Link} to='ip-calc'>
+            <ListItemIcon>
+              <Calculate/>
+            </ListItemIcon>
+            <ListItemText primary='IP Calc'/>
+          </ListItemButton>
+        </ListItem>
       </List>
     ),
+  },
+  {
+    path: 'ip-calc',
+    element: <IpCalc/>,
   },
 ]);
 
