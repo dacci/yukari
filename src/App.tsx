@@ -11,7 +11,8 @@ import {
   ThemeProvider,
   useMediaQuery
 } from '@mui/material';
-import {Calculate} from '@mui/icons-material';
+import {Calculate, Dns} from '@mui/icons-material';
+import DnsResolver from './component/DnsResolver';
 import IpCalc from './component/IpCalc';
 
 const router = createHashRouter([
@@ -19,6 +20,14 @@ const router = createHashRouter([
     path: '/',
     element: (
       <List>
+        <ListItem>
+          <ListItemButton component={Link} to='dns-resolver'>
+            <ListItemIcon>
+              <Dns/>
+            </ListItemIcon>
+            <ListItemText primary='DNS Resolver'/>
+          </ListItemButton>
+        </ListItem>
         <ListItem>
           <ListItemButton component={Link} to='ip-calc'>
             <ListItemIcon>
@@ -29,6 +38,10 @@ const router = createHashRouter([
         </ListItem>
       </List>
     ),
+  },
+  {
+    path: 'dns-resolver',
+    element: <DnsResolver/>,
   },
   {
     path: 'ip-calc',
