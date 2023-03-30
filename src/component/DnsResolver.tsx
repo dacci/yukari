@@ -180,13 +180,22 @@ function DnsResolver() {
   };
 
   return (
-    <Grid container spacing={1} sx={{p: 2}}>
+    <Grid
+      component='form'
+      container
+      spacing={1}
+      sx={{p: 2}}
+      onSubmit={(e) => {
+        e.preventDefault();
+        resolve();
+      }}
+    >
       <Grid item xs={8} sm={10}>
         <TextField
           fullWidth
           InputProps={{
             endAdornment: (
-              <IconButton onClick={resolve}>
+              <IconButton type='submit'>
                 <Send/>
               </IconButton>
             ),
