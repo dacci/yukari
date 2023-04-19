@@ -190,21 +190,6 @@ function DnsResolver() {
         resolve();
       }}
     >
-      <Grid item xs={8} sm={10}>
-        <TextField
-          fullWidth
-          InputProps={{
-            endAdornment: (
-              <IconButton type='submit'>
-                <Send/>
-              </IconButton>
-            ),
-          }}
-          label='Name'
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </Grid>
       <Grid item xs={4} sm={2}>
         <TextField
           fullWidth
@@ -220,6 +205,21 @@ function DnsResolver() {
               .map(([c, [n]], i) => <MenuItem key={c} value={c}>{n}</MenuItem>)
           }
         </TextField>
+      </Grid>
+      <Grid item xs={8} sm={10}>
+        <TextField
+          fullWidth
+          InputProps={{
+            endAdornment: (
+              <IconButton type='submit'>
+                <Send/>
+              </IconButton>
+            ),
+          }}
+          label='Name'
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </Grid>
       {responses.map((r, i) => (
         <Grid item key={i} xs={12} sm={6}>
