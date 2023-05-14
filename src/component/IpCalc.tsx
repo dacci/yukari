@@ -106,7 +106,7 @@ function IpCalc() {
         <TextField
           disabled
           fullWidth
-          label="Hex IP Address"
+          label='Hex IP Address'
           value={toHexIpAddress(parsedAddress)}
         />
       </Grid>
@@ -124,7 +124,7 @@ function IpCalc() {
         <TextField
           disabled
           fullWidth
-          label="Wildcard Mask"
+          label='Wildcard Mask'
           value={toWildcardMask(parsedSubnet)}
         />
       </Grid>
@@ -165,7 +165,7 @@ function IpCalc() {
         <TextField
           disabled
           fullWidth
-          label="Network Address"
+          label='Network Address'
           value={networkAddress}
         />
       </Grid>
@@ -173,7 +173,7 @@ function IpCalc() {
         <TextField
           disabled
           fullWidth
-          label="Broadcast Address"
+          label='Broadcast Address'
           value={broadcastAddress}
         />
       </Grid>
@@ -182,7 +182,7 @@ function IpCalc() {
           disabled
           fullWidth
           inputProps={{sx: {textAlign: 'right'}}}
-          label="Number of addresses"
+          label='Number of addresses'
           value={(1n << BigInt(32 - prefixLength)).toString()}
         />
       </Grid>
