@@ -217,8 +217,8 @@ function DnsResolver() {
           {
             Object
               .entries(TYPES)
-              .filter(([c, [n, resolvable]]) => resolvable)
-              .map(([c, [n]], i) => <MenuItem key={c} value={c}>{n}</MenuItem>)
+              .filter(([_, pair]) => pair[1])
+              .map(([c, [n]]) => <MenuItem key={c} value={c}>{n}</MenuItem>)
           }
         </TextField>
       </Grid>
