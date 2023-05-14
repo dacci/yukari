@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {useSnackbar} from 'notistack';
 import {
   Card,
   CardContent,
@@ -151,6 +152,8 @@ function DnsResolver() {
   const [responses, setResponses] = useState<Response[]>([]);
   const [pending, setPending] = useState(false);
 
+  const {enqueueSnackbar} = useSnackbar();
+
   const resolve = () => {
     setPending(true);
     const params = new URLSearchParams({name, type});
@@ -162,6 +165,9 @@ function DnsResolver() {
       .then((r) => r.json())
       .then((r: DnsResponse) => {
         if (isErrorResponse(r)) {
+          enqueueSnackbar(r.error, {
+            variant: 'error',
+          });
         } else {
           const res = r.Answer
             ?.map((r) => ({
@@ -176,7 +182,13 @@ function DnsResolver() {
               TTL: a.TTL,
               data: [...a.data, ...c.data],
             }));
-          if (res) setResponses([res as Response, ...responses]);
+          if (res) {
+            setResponses([res as Response, ...responses]);
+          } else {
+            enqueueSnackbar('No answer', {
+              variant: 'warning',
+            });
+          }
         }
       })
       .catch(console.error)

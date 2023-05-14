@@ -14,6 +14,7 @@ import {
 import {Calculate, Dns} from '@mui/icons-material';
 import DnsResolver from './component/DnsResolver';
 import IpCalc from './component/IpCalc';
+import {SnackbarProvider} from 'notistack';
 
 const router = createHashRouter([
   {
@@ -60,7 +61,9 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline/>
-      <RouterProvider router={router}/>
+      <SnackbarProvider>
+        <RouterProvider router={router}/>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }
