@@ -9,12 +9,12 @@ import {
   IconButton,
   List,
   ListItem,
-  ListItemButton,
   ListItemText,
   MenuItem,
   TextField
 } from '@mui/material';
 import {ContentCopy, Delete, Send} from '@mui/icons-material';
+import './DnsResolver.css';
 
 interface ResourceRecord {
   name: string;
@@ -253,15 +253,16 @@ function DnsResolver() {
               }
             />
             <CardContent>
-              <List disablePadding>
+              <List>
                 {r.data.map((d, i) => (
-                  <ListItem disableGutters disablePadding key={i}>
-                    <ListItemButton disableGutters key={i} onClick={() => navigator.clipboard.writeText(d)}>
-                      <IconButton>
+                  <ListItem
+                    key={i}
+                    secondaryAction={
+                      <IconButton edge='end' onClick={() => navigator.clipboard.writeText(d)}>
                         <ContentCopy/>
                       </IconButton>
-                      <ListItemText primary={d}/>
-                    </ListItemButton>
+                    }>
+                    <ListItemText className='rec-val' primary={d}/>
                   </ListItem>
                 ))}
               </List>

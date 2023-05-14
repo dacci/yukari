@@ -1,0 +1,12 @@
+.MuiCardContent-root {
+  padding: 0 !important;
+}
+
+.MuiCardContent-root:last-child {
+  padding-bottom: 0 !important;
+}
+
+.rec-val {
+  overflow-x: scroll;
+  white-space: pre;
+}
