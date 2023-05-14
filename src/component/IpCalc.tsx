@@ -177,6 +177,15 @@ function IpCalc() {
           value={broadcastAddress}
         />
       </Grid>
+      <Grid item xs={6}>
+        <TextField
+          disabled
+          fullWidth
+          inputProps={{sx: {textAlign: 'right'}}}
+          label="Number of addresses"
+          value={(1n << BigInt(32 - prefixLength)).toString()}
+        />
+      </Grid>
     </Grid>
   );
 }
