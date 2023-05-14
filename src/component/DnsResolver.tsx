@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Grid,
   IconButton,
   List,
@@ -148,8 +149,10 @@ function DnsResolver() {
   const [name, setName] = useState('');
   const [type, setType] = useState('1');
   const [responses, setResponses] = useState<Response[]>([]);
+  const [pending, setPending] = useState(false);
 
   const resolve = () => {
+    setPending(true);
     const params = new URLSearchParams({name, type});
     fetch(`https://cloudflare-dns.com/dns-query?${params}`, {
       headers: {
@@ -176,7 +179,8 @@ function DnsResolver() {
           if (res) setResponses([res as Response, ...responses]);
         }
       })
-      .catch(console.error);
+      .catch(console.error)
+      .then(() => setPending(false));
   };
 
   return (
@@ -211,8 +215,8 @@ function DnsResolver() {
           fullWidth
           InputProps={{
             endAdornment: (
-              <IconButton type='submit'>
-                <Send/>
+              <IconButton type='submit' disabled={pending}>
+                {pending ? <CircularProgress/> : <Send/>}
               </IconButton>
             ),
           }}
