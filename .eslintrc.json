@@ -1,0 +1,13 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "comma-dangle": ["error", "always-multiline"],
+    "comma-spacing": "error",
+    "indent": ["error", 2],
+    "key-spacing": "error",
+    "object-curly-spacing": ["error", "always"],
+    "semi": "error",
+    "sort-imports": "error",
+    "space-infix-ops": "error"
+  }
+}
