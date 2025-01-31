@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { ClipboardEventHandler, useCallback, useEffect, useState } from 'react';
 import { IPv4 } from 'ipaddr.js';
 import { Grid2, InputAdornment, Slider, TextField } from '@mui/material';
 
@@ -82,6 +82,21 @@ function IpCalc() {
     }
   }, []);
 
+  const handlePaste: ClipboardEventHandler<HTMLDivElement> = (e) => {
+    const data = e.clipboardData.getData('text').trim();
+    if (data === '') return;
+
+    if (IPv4.isValidCIDR(data)) {
+      e.preventDefault();
+      const [ip, length] = IPv4.parseCIDR(data);
+      setIpAddress(ip.toNormalizedString());
+      setMaskBits(length.toString());
+    } else if (IPv4.isValid(data)) {
+      e.preventDefault();
+      setIpAddress(data);
+    }
+  };
+
   useEffect(() => {
     const cidr = `${parsedAddress.toNormalizedString()}/${prefixLength}`;
     setNetworkAddress(IPv4.networkAddressFromCIDR(cidr).toNormalizedString());
@@ -100,6 +115,7 @@ function IpCalc() {
           label='IP Address'
           value={ipAddress}
           onChange={(e) => setIpAddress(e.target.value)}
+          onPaste={handlePaste}
         />
       </Grid2>
       <Grid2 size={6}>
