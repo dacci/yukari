@@ -17,6 +17,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - run: corepack enable yarn
       - name: Setup node
         uses: actions/setup-node@v4
         with:
