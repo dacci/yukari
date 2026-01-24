@@ -16,9 +16,9 @@
     "@mui/material": "^6.4.11",
     "ipaddr.js": "^2.2.0",
     "notistack": "^3.0.2",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.1"
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-router-dom": "^7.13.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.27.0",
