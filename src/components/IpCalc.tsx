@@ -1,6 +1,6 @@
-import { ClipboardEventHandler, useCallback, useEffect, useState } from 'react';
+import { type ClipboardEventHandler, useCallback, useEffect, useState } from 'react';
 import { IPv4 } from 'ipaddr.js';
-import { Grid2, InputAdornment, Slider, TextField } from '@mui/material';
+import { Grid, InputAdornment, Slider, TextField } from '@mui/material';
 
 const toHexIpAddress = (ipAddress: IPv4) => {
   try {
@@ -104,10 +104,10 @@ function IpCalc() {
   }, [parsedAddress, prefixLength])
 
   return (
-    <Grid2 container spacing={2} alignItems='center' sx={{
+    <Grid container spacing={2} alignItems='center' sx={{
       p: 2,
     }}>
-      <Grid2 size={6}>
+      <Grid size={6}>
         <TextField
           error={ipAddressError}
           fullWidth
@@ -117,16 +117,16 @@ function IpCalc() {
           onChange={(e) => setIpAddress(e.target.value)}
           onPaste={handlePaste}
         />
-      </Grid2>
-      <Grid2 size={6}>
+      </Grid>
+      <Grid size={6}>
         <TextField
           disabled
           fullWidth
           label='Hex IP Address'
           value={toHexIpAddress(parsedAddress)}
         />
-      </Grid2>
-      <Grid2 size={6}>
+      </Grid>
+      <Grid size={6}>
         <TextField
           error={subnetMaskError}
           fullWidth
@@ -135,16 +135,16 @@ function IpCalc() {
           value={subnetMask}
           onChange={(e) => setSubnetMask(e.target.value)}
         />
-      </Grid2>
-      <Grid2 size={6}>
+      </Grid>
+      <Grid size={6}>
         <TextField
           disabled
           fullWidth
           label='Wildcard Mask'
           value={toWildcardMask(parsedSubnet)}
         />
-      </Grid2>
-      <Grid2 size={12}>
+      </Grid>
+      <Grid size={12}>
         <TextField
           error={maskBitsError}
           fullWidth
@@ -178,24 +178,24 @@ function IpCalc() {
           value={maskBits}
           onChange={(e) => setMaskBits(e.target.value)}
         />
-      </Grid2>
-      <Grid2 size={6}>
+      </Grid>
+      <Grid size={6}>
         <TextField
           disabled
           fullWidth
           label='Network Address'
           value={networkAddress}
         />
-      </Grid2>
-      <Grid2 size={6}>
+      </Grid>
+      <Grid size={6}>
         <TextField
           disabled
           fullWidth
           label='Broadcast Address'
           value={broadcastAddress}
         />
-      </Grid2>
-      <Grid2 size={6}>
+      </Grid>
+      <Grid size={6}>
         <TextField
           disabled
           fullWidth
@@ -203,8 +203,8 @@ function IpCalc() {
           label='Number of addresses'
           value={(1n << BigInt(32 - prefixLength)).toString()}
         />
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }
 

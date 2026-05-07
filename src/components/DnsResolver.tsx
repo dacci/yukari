@@ -5,7 +5,7 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
-  Grid2,
+  Grid,
   IconButton,
   List,
   ListItem,
@@ -196,7 +196,7 @@ function DnsResolver() {
   };
 
   return (
-    <Grid2
+    <Grid
       component='form'
       container
       spacing={1}
@@ -206,7 +206,7 @@ function DnsResolver() {
         resolve();
       }}
     >
-      <Grid2 size={{ xs: 4, sm: 2 }}>
+      <Grid size={{ xs: 4, sm: 2 }}>
         <TextField
           fullWidth
           label='Type'
@@ -221,8 +221,8 @@ function DnsResolver() {
               .map(([c, [n]]) => <MenuItem key={c} value={c}>{n}</MenuItem>)
           }
         </TextField>
-      </Grid2>
-      <Grid2 size={{ xs: 8, sm: 10 }}>
+      </Grid>
+      <Grid size={{ xs: 8, sm: 10 }}>
         <TextField
           fullWidth
           slotProps={{
@@ -238,9 +238,9 @@ function DnsResolver() {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-      </Grid2>
+      </Grid>
       {responses.map((r, i) => (
-        <Grid2 key={i} size={{ xs: 12, sm: 6 }}>
+        <Grid key={i} size={{ xs: 12, sm: 6 }}>
           <Card>
             <CardHeader
               title={r.name}
@@ -270,9 +270,9 @@ function DnsResolver() {
               </List>
             </CardContent>
           </Card>
-        </Grid2>
+        </Grid>
       ))}
-    </Grid2>
+    </Grid>
   );
 }
 
