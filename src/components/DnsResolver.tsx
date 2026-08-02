@@ -1,20 +1,22 @@
-import { useState } from 'react';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import CircularProgress from '@mui/material/CircularProgress';
+import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
 import { useSnackbar } from 'notistack';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CircularProgress,
-  Grid,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  MenuItem,
-  TextField
-} from '@mui/material';
-import { ContentCopy, Delete, Send } from '@mui/icons-material';
-import './DnsResolver.css';
+import { useId, useState } from 'react';
 
 interface ResourceRecord {
   name: string;
@@ -157,20 +159,21 @@ function DnsResolver() {
   const resolve = () => {
     setPending(true);
     const params = new URLSearchParams({ name, type });
-    fetch(`https://cloudflare-dns.com/dns-query?${params}`, {
+    fetch(`https://dns.google/resolve?${params}`, {
       headers: {
         accept: 'application/dns-json',
       },
     })
-      .then((r) => r.json())
+      .then(r => r.json())
       .then((r: DnsResponse) => {
         if (isErrorResponse(r)) {
           enqueueSnackbar(r.error, {
             variant: 'error',
           });
-        } else {
+        }
+        else {
           const res = r.Answer
-            ?.map((r) => ({
+            ?.map(r => ({
               name: r.name,
               type: r.type,
               TTL: r.TTL,
@@ -184,7 +187,8 @@ function DnsResolver() {
             }));
           if (res) {
             setResponses([res as Response, ...responses]);
-          } else {
+          }
+          else {
             enqueueSnackbar('No answer', {
               variant: 'warning',
             });
@@ -195,84 +199,86 @@ function DnsResolver() {
       .then(() => setPending(false));
   };
 
+  const typeId = useId();
+
   return (
-    <Grid
-      component='form'
-      container
+    <Stack
+      component="form"
       spacing={1}
-      sx={{ p: 2 }}
       onSubmit={(e) => {
         e.preventDefault();
         resolve();
       }}
     >
-      <Grid size={{ xs: 4, sm: 2 }}>
+      <Stack direction="row" spacing={1}>
+        <FormControl>
+          <InputLabel id={`${typeId}-label`}>Type</InputLabel>
+          <Select
+            autoWidth
+            label="Type"
+            labelId={`${typeId}-label`}
+            value={type}
+            sx={{ minWidth: '6em' }}
+            onChange={e => setType(e.target.value)}
+          >
+            {
+              Object
+                .entries(TYPES)
+                .filter(([, pair]) => pair[1])
+                .map(([c, [n]]) => <MenuItem key={c} value={c}>{n}</MenuItem>)
+            }
+          </Select>
+        </FormControl>
         <TextField
-          fullWidth
-          label='Type'
-          select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-        >
-          {
-            Object
-              .entries(TYPES)
-              .filter(([, pair]) => pair[1])
-              .map(([c, [n]]) => <MenuItem key={c} value={c}>{n}</MenuItem>)
-          }
-        </TextField>
-      </Grid>
-      <Grid size={{ xs: 8, sm: 10 }}>
-        <TextField
-          fullWidth
+          label="Name"
+          value={name}
+          sx={{ flex: 1 }}
           slotProps={{
             input: {
               endAdornment: (
-                <IconButton type='submit' disabled={pending}>
-                  {pending ? <CircularProgress /> : <Send />}
+                <IconButton type="submit" disabled={pending}>
+                  {pending ? <CircularProgress /> : <SendIcon />}
                 </IconButton>
               ),
-            }
+            },
           }}
-          label='Name'
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={e => setName(e.target.value)}
         />
-      </Grid>
+      </Stack>
       {responses.map((r, i) => (
-        <Grid key={i} size={{ xs: 12, sm: 6 }}>
-          <Card>
-            <CardHeader
-              title={r.name}
-              subheader={`${TYPES[r.type][0]}, TTL: ${r.TTL}`}
-              action={
-                <IconButton onClick={() => {
-                  responses.splice(i, 1);
-                  setResponses([...responses]);
-                }}>
-                  <Delete />
-                </IconButton>
-              }
-            />
-            <CardContent>
-              <List>
-                {r.data.map((d, i) => (
-                  <ListItem
-                    key={i}
-                    secondaryAction={
-                      <IconButton edge='end' onClick={() => navigator.clipboard.writeText(d)}>
-                        <ContentCopy />
-                      </IconButton>
-                    }>
-                    <ListItemText className='rec-val' primary={d} />
-                  </ListItem>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        </Grid>
+        <Card>
+          <CardHeader
+            title={r.name}
+            subheader={`${TYPES[r.type][0]}, TTL: ${r.TTL}`}
+            action={(
+              <IconButton onClick={() => {
+                responses.splice(i, 1);
+                setResponses([...responses]);
+              }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
+          />
+          <CardContent sx={{ p: 0, ['&:last-child']: { paddingBottom: 0 } }}>
+            <List>
+              {r.data.map((d, i) => (
+                <ListItem
+                  key={i}
+                  secondaryAction={(
+                    <IconButton edge="end" onClick={() => navigator.clipboard.writeText(d)}>
+                      <ContentCopyIcon />
+                    </IconButton>
+                  )}
+                >
+                  <ListItemText primary={d} sx={{ overflowX: 'scroll', whiteSpace: 'pre' }} />
+                </ListItem>
+              ))}
+            </List>
+          </CardContent>
+        </Card>
       ))}
-    </Grid>
+    </Stack>
   );
 }
 

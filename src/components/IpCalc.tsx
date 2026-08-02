@@ -1,16 +1,20 @@
-import { type ClipboardEventHandler, useCallback, useEffect, useState } from 'react';
+import Grid from '@mui/material/Grid';
+import InputAdornment from '@mui/material/InputAdornment';
+import Slider from '@mui/material/Slider';
+import TextField from '@mui/material/TextField';
 import { IPv4 } from 'ipaddr.js';
-import { Grid, InputAdornment, Slider, TextField } from '@mui/material';
+import { type ClipboardEventHandler, useState } from 'react';
 
 const toHexIpAddress = (ipAddress: IPv4) => {
   try {
     return ipAddress
       .toByteArray()
-      .map((o) => '0' + o.toString(16).toUpperCase())
-      .map((s) => s.substring(s.length - 2, s.length))
+      .map(o => '0' + o.toString(16).toUpperCase())
+      .map(s => s.substring(s.length - 2, s.length))
       .join('.');
-  } catch {
-    return ''
+  }
+  catch {
+    return '';
   }
 };
 
@@ -18,10 +22,11 @@ const toWildcardMask = (subnetMask: IPv4) => {
   try {
     return subnetMask
       .toByteArray()
-      .map((o) => ~o & 0xFF)
+      .map(o => ~o & 0xFF)
       .join('.');
-  } catch {
-    return ''
+  }
+  catch {
+    return '';
   }
 };
 
@@ -33,24 +38,34 @@ function IpCalc() {
   const [maskBits, setMaskBits_] = useState('24');
   const [maskBitsError, setMaskBitsError] = useState(false);
 
-  const [parsedAddress, setParsedAddress] = useState(() => IPv4.parse(ipAddress));
+  const [parsedAddress, setParsedAddress_] = useState(() => IPv4.parse(ipAddress));
   const [parsedSubnet, setParsedSubnet] = useState(() => IPv4.parse(subnetMask));
-  const [prefixLength, setPrefixLength] = useState(~~maskBits);
+  const [prefixLength, setPrefixLength_] = useState(~~maskBits);
   const [networkAddress, setNetworkAddress] = useState(() => IPv4.networkAddressFromCIDR(`${ipAddress}/${maskBits}`).toNormalizedString());
   const [broadcastAddress, setBroadcastAddress] = useState(() => IPv4.broadcastAddressFromCIDR(`${ipAddress}/${maskBits}`).toNormalizedString());
 
-  const setIpAddress = useCallback((value: string) => {
+  const setCidr = (parsedAddress: IPv4, prefixLength: number) => {
+    setParsedAddress_(parsedAddress);
+    setPrefixLength_(prefixLength);
+
+    const cidr = `${parsedAddress.toNormalizedString()}/${prefixLength}`;
+    setNetworkAddress(IPv4.networkAddressFromCIDR(cidr).toNormalizedString());
+    setBroadcastAddress(IPv4.broadcastAddressFromCIDR(cidr).toNormalizedString());
+  };
+
+  const setIpAddress = (value: string) => {
     setIpAddress_(value);
 
     try {
-      setParsedAddress(IPv4.parse(value));
+      setCidr(IPv4.parse(value), prefixLength);
       setIpAddressError(false);
-    } catch {
+    }
+    catch {
       setIpAddressError(true);
     }
-  }, [])
+  };
 
-  const setSubnetMask = useCallback((value: string) => {
+  const setSubnetMask = (value: string) => {
     setSubnetMask_(value);
 
     try {
@@ -58,29 +73,31 @@ function IpCalc() {
       const length = parsed.prefixLengthFromSubnetMask();
       if (length !== null) {
         setParsedSubnet(parsed);
-        setPrefixLength(length);
+        setCidr(parsedAddress, length);
         setMaskBits_(length.toString());
       }
       setSubnetMaskError(length === null);
-    } catch {
+    }
+    catch {
       setSubnetMaskError(true);
     }
-  }, []);
+  };
 
-  const setMaskBits = useCallback((value: string) => {
+  const setMaskBits = (value: string) => {
     setMaskBits_(value);
 
     const length = Math.trunc(Number(value));
     if (0 <= length && length <= 32) {
       const parsedSubnet = IPv4.subnetMaskFromPrefixLength(length);
       setParsedSubnet(parsedSubnet);
-      setPrefixLength(length);
+      setCidr(parsedAddress, length);
       setSubnetMask_(parsedSubnet.toNormalizedString());
       setMaskBitsError(false);
-    } else {
+    }
+    else {
       setMaskBitsError(true);
     }
-  }, []);
+  };
 
   const handlePaste: ClipboardEventHandler<HTMLDivElement> = (e) => {
     const data = e.clipboardData.getData('text').trim();
@@ -91,30 +108,23 @@ function IpCalc() {
       const [ip, length] = IPv4.parseCIDR(data);
       setIpAddress(ip.toNormalizedString());
       setMaskBits(length.toString());
-    } else if (IPv4.isValid(data)) {
+    }
+    else if (IPv4.isValid(data)) {
       e.preventDefault();
       setIpAddress(data);
     }
   };
 
-  useEffect(() => {
-    const cidr = `${parsedAddress.toNormalizedString()}/${prefixLength}`;
-    setNetworkAddress(IPv4.networkAddressFromCIDR(cidr).toNormalizedString());
-    setBroadcastAddress(IPv4.broadcastAddressFromCIDR(cidr).toNormalizedString());
-  }, [parsedAddress, prefixLength])
-
   return (
-    <Grid container spacing={2} alignItems='center' sx={{
-      p: 2,
-    }}>
+    <Grid container spacing={2}>
       <Grid size={6}>
         <TextField
           error={ipAddressError}
           fullWidth
           slotProps={{ htmlInput: { inputMode: 'decimal' } }}
-          label='IP Address'
+          label="IP Address"
           value={ipAddress}
-          onChange={(e) => setIpAddress(e.target.value)}
+          onChange={e => setIpAddress(e.target.value)}
           onPaste={handlePaste}
         />
       </Grid>
@@ -122,7 +132,7 @@ function IpCalc() {
         <TextField
           disabled
           fullWidth
-          label='Hex IP Address'
+          label="Hex IP Address"
           value={toHexIpAddress(parsedAddress)}
         />
       </Grid>
@@ -131,16 +141,16 @@ function IpCalc() {
           error={subnetMaskError}
           fullWidth
           slotProps={{ htmlInput: { inputMode: 'decimal' } }}
-          label='Subnet Mask'
+          label="Subnet Mask"
           value={subnetMask}
-          onChange={(e) => setSubnetMask(e.target.value)}
+          onChange={e => setSubnetMask(e.target.value)}
         />
       </Grid>
       <Grid size={6}>
         <TextField
           disabled
           fullWidth
-          label='Wildcard Mask'
+          label="Wildcard Mask"
           value={toWildcardMask(parsedSubnet)}
         />
       </Grid>
@@ -162,7 +172,7 @@ function IpCalc() {
             },
             input: {
               endAdornment: (
-                <InputAdornment position='end' sx={{ width: '100%', paddingX: 2 }}>
+                <InputAdornment position="end" sx={{ width: '100%', paddingX: 2 }}>
                   <Slider
                     max={32}
                     min={0}
@@ -174,16 +184,16 @@ function IpCalc() {
               ),
             },
           }}
-          label='Mask Bits'
+          label="Mask Bits"
           value={maskBits}
-          onChange={(e) => setMaskBits(e.target.value)}
+          onChange={e => setMaskBits(e.target.value)}
         />
       </Grid>
       <Grid size={6}>
         <TextField
           disabled
           fullWidth
-          label='Network Address'
+          label="Network Address"
           value={networkAddress}
         />
       </Grid>
@@ -191,7 +201,7 @@ function IpCalc() {
         <TextField
           disabled
           fullWidth
-          label='Broadcast Address'
+          label="Broadcast Address"
           value={broadcastAddress}
         />
       </Grid>
@@ -200,7 +210,7 @@ function IpCalc() {
           disabled
           fullWidth
           slotProps={{ htmlInput: { sx: { textAlign: 'right' } } }}
-          label='Number of addresses'
+          label="Number of addresses"
           value={(1n << BigInt(32 - prefixLength)).toString()}
         />
       </Grid>
