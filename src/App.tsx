@@ -87,7 +87,17 @@ function App() {
         >
           <SideMenu />
         </Drawer>
-        <Box component="main" sx={{ p: 2, mt: { xs: 7, sm: 8, md: 0 }, width: '100%' }}>
+        <Box
+          component="main"
+          sx={{
+            'width': '100%',
+            'p': 2,
+            'mt': { xs: 7, sm: 8, md: 0 },
+            '@media (orientation: landscape)': {
+              mt: { xs: 6, sm: 8, md: 0 },
+            },
+          }}
+        >
           <Outlet />
         </Box>
       </Box>
