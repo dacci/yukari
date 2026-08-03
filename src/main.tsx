@@ -1,35 +1,23 @@
 import { SnackbarProvider } from 'notistack';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createHashRouter, Navigate, RouterProvider } from 'react-router';
+import { HashRouter, Navigate, Route, Routes } from 'react-router';
 import App from './App';
 import DnsResolver from './components/DnsResolver';
 import IpCalc from './components/IpCalc';
 
-const router = createHashRouter([
-  {
-    Component: App,
-    children: [
-      {
-        path: '/dns-resolver',
-        Component: DnsResolver,
-      },
-      {
-        path: '/ip-calc',
-        Component: IpCalc,
-      },
-      {
-        path: '*',
-        element: <Navigate to="/" replace />,
-      },
-    ],
-  },
-]);
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <SnackbarProvider>
-      <RouterProvider router={router} />
+      <HashRouter>
+        <Routes>
+          <Route Component={App}>
+            <Route path="dns-resolver/" Component={DnsResolver} />
+            <Route path="ip-calc/" Component={IpCalc} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
+        </Routes>
+      </HashRouter>
     </SnackbarProvider>
   </StrictMode>,
 );

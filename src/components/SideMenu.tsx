@@ -17,12 +17,12 @@ interface MenuItem {
 
 const mainContents: MenuItem[] = [
   {
-    path: '/dns-resolver',
+    path: 'dns-resolver/',
     title: 'DNS Resolver',
     icon: <DnsIcon />,
   },
   {
-    path: '/ip-calc',
+    path: 'ip-calc/',
     title: 'IP Calc',
     icon: <CalculateIcon />,
   },
