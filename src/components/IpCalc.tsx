@@ -107,7 +107,7 @@ function IpCalc() {
       e.preventDefault();
       const [ip, length] = IPv4.parseCIDR(data);
       setIpAddress(ip.toNormalizedString());
-      setMaskBits(length.toString());
+      setCidr(ip, length);
     }
     else if (IPv4.isValid(data)) {
       e.preventDefault();
