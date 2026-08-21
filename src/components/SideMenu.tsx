@@ -1,62 +1,53 @@
-import CalculateIcon from '@mui/icons-material/Calculate';
-import DnsIcon from '@mui/icons-material/Dns';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Stack from '@mui/material/Stack';
-import { type ReactNode } from 'react';
-import { Link, matchPath, useLocation } from 'react-router';
+import MuiDrawer, { drawerClasses } from '@mui/material/Drawer';
+import { type ModalProps } from '@mui/material/Modal';
+import { styled } from '@mui/material/styles';
+import type { ElementType, TransitionEventHandler } from 'react';
+import MenuContent from './MenuContent.tsx';
 
-interface MenuItem {
-  readonly path: string;
-  readonly title: string;
-  readonly icon: ReactNode;
+const drawerWidth = 240;
+
+const Drawer = styled(MuiDrawer)({
+  flexShrink: 0,
+  width: drawerWidth,
+  boxSizing: 'border-box',
+  [`& .${drawerClasses.paper}`]: {
+    width: drawerWidth,
+    boxSizing: 'border-box',
+  },
+});
+
+interface SideMenuProps {
+  readonly component?: ElementType;
+  readonly open?: boolean;
+  readonly onTransitionEnd?: TransitionEventHandler<HTMLDivElement>;
+  readonly onClose?: ModalProps['onClose'];
 }
 
-const mainContents: MenuItem[] = [
-  {
-    path: 'dns-resolver/',
-    title: 'DNS Resolver',
-    icon: <DnsIcon />,
-  },
-  {
-    path: 'ip-calc/',
-    title: 'IP Calc',
-    icon: <CalculateIcon />,
-  },
-];
-
-const subContents: MenuItem[] = [
-];
-
-function SideMenu() {
-  const { pathname } = useLocation();
-
+function SideMenu(props: SideMenuProps) {
   return (
-    <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
-      <List dense>
-        {mainContents.map((c, i) => (
-          <ListItem key={i} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton component={Link} to={c.path} selected={!!matchPath(c.path, pathname)}>
-              <ListItemIcon>{c.icon}</ListItemIcon>
-              <ListItemText primary={c.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <List dense>
-        {subContents.map((c, i) => (
-          <ListItem key={i} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton component={Link} to={c.path} selected={!!matchPath(c.path, pathname)}>
-              <ListItemIcon>{c.icon}</ListItemIcon>
-              <ListItemText primary={c.title} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Stack>
+    <>
+      <Drawer
+        component={props.component}
+        variant="temporary"
+        open={props.open}
+        keepMounted
+        sx={{
+          'display': { xs: 'block', md: 'none' },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+        }}
+        onTransitionEnd={props.onTransitionEnd}
+        onClose={props.onClose}
+      >
+        <MenuContent />
+      </Drawer>
+      <Drawer
+        component={props.component}
+        variant="permanent"
+        sx={{ display: { xs: 'none', md: 'block' } }}
+      >
+        <MenuContent />
+      </Drawer>
+    </>
   );
 }
 
